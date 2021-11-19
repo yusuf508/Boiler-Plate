@@ -51,9 +51,22 @@ const getUsers = async () => {
 
 const getUserByEmailAndPassword = async (email, password) => {
 let qry = `SELECT * FROM USERS where email='${email}' and password='${password}'`
+let result = await db.executeQuery(`SELECT U.USERID, U.FULLNAME, U.EMAIL, R.ROLENAME
+                                        FROM USERS U
+                                                 INNER JOIN USERROLE UR on U.USERID = UR.userId
+                                                 INNER JOIN ROLES R on UR.roleId = R.ROLEID
+                                        WHERE EMAIL =  '${email}'
+                                          AND PASSWORD = '${password}'
+                                          AND ACTIVE = 1`)
+                                          console.log(result);
 
- console.log(qry);
-  return await db.executeQuerysingleparam(qry);
+    if (!result)
+        return null;
+    return result[0];
+
+
+//  console.log(result);
+ // return await db.executeQuerysingleparam(qry);
 
    //return users.filter(u => u.email == email && u.password == password);
 
